@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surprise 4 — Our Album</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #fdf6f0;
+  --cover: #3b2f2f;
+  --cover-text: #f5e6c8;
+  --spine: #2a1f1f;
+  --paper: #fdfaf5;
+  --ink: #2c1f1f;
+  --ink-soft: #6b5050;
+  --gold: #c9a84c;
+  --shadow: rgba(0,0,0,0.18);
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  font-family: 'DM Sans', sans-serif;
+  user-select: none;
+}
+
+/* ── BACKGROUND TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    radial-gradient(ellipse at 10% 15%, rgba(255,182,193,0.35) 0%, transparent 45%),
+    radial-gradient(ellipse at 90% 85%, rgba(255,218,185,0.3) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 50%, rgba(255,240,245,0.4) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ── ALBUM WRAPPER ── */
+#album {
+  position: fixed; inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+}
+
+/* ── BOOK ── */
+#book {
+  position: relative;
+  width: min(90vw, 360px);
+  height: min(85vh, 520px);
+  transform-style: preserve-3d;
+}
+
+/* ── COVER ── */
+#cover {
+  position: absolute; inset: 0;
+  background: var(--cover);
+  border-radius: 4px 14px 14px 4px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px;
+  box-shadow:
+    -6px 0 0 var(--spine),
+    0 10px 40px rgba(0,0,0,0.4),
+    inset 0 0 60px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.15s ease;
+}
+#cover:hover { transform: scale(1.01); }
+#cover:active { transform: scale(0.99); }
+
+.cover-title {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(28px, 8vw, 40px);
+  color: var(--cover-text);
+  text-align: center;
+  line-height: 1.2;
+  padding: 0 20px;
+}
+.cover-subtitle {
+  font-size: 12px;
+  color: rgba(245,230,200,0.5);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.cover-ornament {
+  font-size: 28px;
+  opacity: 0.8;
+}
+.cover-hint {
+  position: absolute;
+  bottom: 20px;
+  font-size: 12px;
+  color: rgba(245,230,200,0.4);
+  letter-spacing: 1.5px;
+  font-style: italic;
+}
+
+/* ── PAGES ── */
+.page {
+  position: absolute; inset: 0;
+  background: var(--paper);
+  border-radius: 4px 14px 14px 4px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  box-shadow:
+    -6px 0 0 #c8bfb0,
+    0 8px 30px rgba(0,0,0,0.25);
+}
+.page.active {
+  display: flex;
+}
+
+/* ── PHOTO AREA ── */
+.photo-frame {
+  width: 100%;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+
+.photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.photo-frame img:hover { transform: scale(1.03); }
+
+/* page number badge */
+.page-num {
+  position: absolute;
+  top: 12px; right: 14px;
+  background: rgba(0,0,0,0.45);
+  color: white;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  letter-spacing: 1px;
+}
+
+/* ── CAPTION STRIP ── */
+.caption-strip {
+  width: 100%;
+  padding: 14px 18px 10px;
+  background: var(--paper);
+  border-top: 1px solid rgba(0,0,0,0.07);
+  flex-shrink: 0;
+}
+
+.caption-text {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(16px, 4.5vw, 20px);
+  color: var(--ink);
+  line-height: 1.4;
+  min-height: 46px;
+}
+
+.caption-date {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+
+/* ── NAV ── */
+.nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 16px 12px;
+  background: var(--paper);
+  flex-shrink: 0;
+}
+
+.nav-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0,0,0,0.15);
+  background: white;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-btn:hover  { background: var(--gold); border-color: var(--gold); color: white; }
+.nav-btn:active { transform: scale(0.92); }
+.nav-btn:disabled { opacity: 0.25; cursor: default; }
+
+.dots {
+  display: flex; gap: 5px; align-items: center;
+}
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.15);
+  transition: all 0.2s ease;
+}
+.dot.active {
+  background: var(--gold);
+  width: 18px;
+  border-radius: 3px;
+}
+
+/* ── LAST PAGE ── */
+#last-page {
+  position: absolute; inset: 0;
+  background: var(--cover);
+  border-radius: 4px 14px 14px 4px;
+  display: none;
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px;
+  box-shadow: -6px 0 0 var(--spine), 0 8px 30px rgba(0,0,0,0.3);
+}
+#last-page.active { display: flex; }
+
+.last-msg {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(22px, 6vw, 30px);
+  color: var(--cover-text);
+  text-align: center;
+  padding: 0 24px;
+  line-height: 1.5;
+}
+.last-ornament { font-size: 32px; }
+
+.last-nav {
+  display: flex; gap: 16px; margin-top: 8px;
+}
+.last-nav .nav-btn {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
+  color: white;
+}
+.last-nav .nav-btn:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+/* ── BACK BUTTON ── */
+.back-btn {
+  position: fixed;
+  bottom: 18px; right: 18px;
+  background: var(--gold);
+  color: #1a0a00;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 13px;
+  z-index: 200;
+  box-shadow: 0 4px 16px rgba(201,168,76,0.4);
+  letter-spacing: 0.5px;
+}
+
+/* ── SWIPE HINT ── */
+#swipe-hint {
+  position: fixed;
+  bottom: 60px;
+  left: 50%; transform: translateX(-50%);
+  font-size: 12px;
+  color: rgba(60,40,20,0.4);
+  letter-spacing: 1px;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+</style>
+</head>
+<body>
+
+<div id="album">
+  <div id="book">
+
+    <!-- COVER -->
+    <div id="cover" onclick="openAlbum()">
+      <div class="cover-ornament">📷</div>
+      <div class="cover-title">Our Little<br>Album 🤍</div>
+      <div class="cover-subtitle">just us</div>
+      <div class="cover-hint">tap to open</div>
+    </div>
+
+    <!-- PHOTO PAGES (1–10) -->
+    <!-- Update src and caption for each photo -->
+
+    <div class="page" data-index="0">
+      <div class="photo-frame">
+        <img src="images/photo1.jpg" alt="photo 1">
+        <div class="page-num">1 / 10</div>
+      </div>
+      <div class="caption-strip">
+        <div class="caption-text">Add your caption here 🤍</div>
+        <div class="caption-date">A memory worth keeping</div>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn" onclick="prev()" disabled>‹</button>
+        <div class="dots" id="dots"></div>
+        <button class="nav-btn" onclick="next()">›</button>
+      </div>
+    </div>
+
+    <div class="page" data-index="1">
+      <div class="photo-frame">
+        <img src="images/photo2.jpg" alt="photo 2">
+        <div class="page-num">2 / 10</div>
+      </div>
+      <div class="caption-strip">
+        <div class="caption-text">Add your caption here 🤍</div>
+        <div class="caption-date">A memory worth keeping</div>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn" onclick="prev()">‹</button>
+        <div class="dots" id="dots1"></div>
+        <button class="nav-btn" onclick="next()">›</button>
+      </div>
+    </div>
+
+    <div class="page" data-index="2">
+      <div class="photo-frame">
+        <img src="images/photo3.jpg" alt="photo 3">
+        <div class="page-num">3 / 10</div>
+      </div>
+      <div class="caption-strip">
+        <div class="caption-text">Add your caption here 🤍</div>
+        <div class="caption-date">A memory worth keeping</div>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn" onclick="prev()">‹</button>
+        <div class="dots" id="dots2"></div>
+        <button class="nav-btn" onclick="next()">›</button>
+      </div>
+    </div>
+
+    <div class="page" data-index="3">
+      <div class="photo-frame">
+        <img src="images/photo4.jpg" alt="photo 4">
+        <div class="page-num">4 / 10</div>
+      </div>
+      <div class="caption-strip">
+        <div class="caption-text">Add your caption here 🤍</div>
+        <div class="caption-date">A memory worth keeping</div>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn" onclick="prev()">‹</button>
+        <div class="dots" id="dots3"></div>
+        <button class="nav-btn" onclick="next()">›</button>
+      </div>
+    </div>
+
+    <div class="page" data-index="4">
+      <div class="photo-frame">
+        <img src="images/photo5.jpg" alt="photo 5">
+        <div class="page-num">5 / 10</div>
+      </div>
+      <div class="caption-strip">
+        <div class="caption-text">Add your caption here 🤍</div>
+        <div class="caption-date">A memory worth keeping</div>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn" onclick="prev()">‹</button>
+        <div class="dots" id="dots4"></div>
+        <button class="nav-btn" onclick="next()">›</button>
+      </div>
+    </div>
+
+    <div class="page" data-index="5">
+      <div class="photo-frame">
+        <img src="images/photo6.jpg" alt="photo 6">
+        <div class="page-num">6 / 10</div>
+      </div>
+      <div class="caption-strip">
+        <div class="caption-text">Add your caption here 🤍</div>
+        <div class="caption-date">A memory worth keeping</div>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn" onclick="prev()">‹</button>
+        <div class="dots" id="dots5"></div>
+        <button class="nav-btn" onclick="next()">›</button>
+      </div>
+    </div>
+
+    <div class="page" data-index="6">
+      <div class="photo-frame">
+        <img src="images/photo7.jpg" alt="photo 7">
+        <div class="page-num">7 / 10</div>
+      </div>
+      <div class="caption-strip">
+        <div class="caption-text">Add your caption here 🤍</div>
+        <div class="caption-date">A memory worth keeping</div>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn" onclick="prev()">‹</button>
+        <div class="dots" id="dots6"></div>
+        <button class="nav-btn" onclick="next()">›</button>
+      </div>
+    </div>
+    
+    <!-- LAST PAGE -->
+    <div id="last-page">
+      <div class="last-ornament">🤍</div>
+      <div class="last-msg">Every picture tells a story.<br>Ours is my favourite. 📷</div>
+      <div class="last-nav">
+        <button class="nav-btn" onclick="prevFromLast()">‹</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="swipe-hint">swipe or tap arrows</div>
+<a href="index.html" class="back-btn">BACK ◀</a>
+
+<script>
+const TOTAL = 10;
+let current = -1; // -1 = cover
+let isOpen = false;
+
+const pages = document.querySelectorAll('.page');
+const lastPage = document.getElementById('last-page');
+const cover = document.getElementById('cover');
+const swipeHint = document.getElementById('swipe-hint');
+
+/* ── BUILD DOTS ── */
+// Build dots inside each page's nav-row
+pages.forEach((page, pi) => {
+  const dotContainers = page.querySelectorAll('.dots');
+  dotContainers.forEach(dc => {
+    for(let i=0;i<TOTAL;i++){
+      const d = document.createElement('div');
+      d.className = 'dot' + (i===pi ? ' active' : '');
+      dc.appendChild(d);
+    }
+  });
+});
+
+function showPage(idx) {
+  pages.forEach(p => p.classList.remove('active'));
+  lastPage.classList.remove('active');
+  cover.style.display = 'none';
+
+  if(idx >= TOTAL) {
+    lastPage.classList.add('active');
+    current = TOTAL;
+    return;
+  }
+
+  pages[idx].classList.add('active');
+  current = idx;
+
+  // update disabled state of prev btn
+  pages[idx].querySelectorAll('.nav-btn').forEach((btn, i) => {
+    if(i === 0) btn.disabled = (idx === 0);
+  });
+}
+
+function openAlbum() {
+  isOpen = true;
+  cover.style.display = 'none';
+  showPage(0);
+  setTimeout(() => { swipeHint.style.opacity = '0'; }, 3000);
+}
+
+function next() {
+  if(current < TOTAL) showPage(current + 1);
+}
+
+function prev() {
+  if(current > 0) showPage(current - 1);
+}
+
+function prevFromLast() {
+  showPage(TOTAL - 1);
+}
+
+/* ── SWIPE SUPPORT ── */
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, {passive:true});
+document.addEventListener('touchend', e => {
+  if(!isOpen) return;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if(Math.abs(dx) > 40) {
+    if(dx < 0) next();
+    else prev();
+  }
+}, {passive:true});
+
+/* ── KEYBOARD ── */
+document.addEventListener('keydown', e => {
+  if(!isOpen) return;
+  if(e.key === 'ArrowRight') next();
+  if(e.key === 'ArrowLeft')  prev();
+});
+</script>
+
+</body>
+</html>
