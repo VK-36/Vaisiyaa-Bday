@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vaisiyaa - Vaisiyaapedia</title>
+<link href="https://fonts.googleapis.com/css2?family=Linux+Libertine+Display&family=Georgia&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f8f9fa;
+  --white: #ffffff;
+  --border: #a2a9b1;
+  --border-light: #eaecf0;
+  --link: #3366cc;
+  --link-visited: #6b4ba1;
+  --text: #202122;
+  --text-soft: #54595d;
+  --infobox-bg: #f8f9fa;
+  --infobox-header: #cee0f2;
+  --warning-bg: #fef6e7;
+  --warning-border: #fc3;
+  --stub-bg: #f0f0f0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  font-family: 'Linux Libertine', Georgia, 'Times New Roman', serif;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* ── HEADER BAR ── */
+.wiki-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border-light);
+  padding: 0;
+}
+
+.wiki-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  padding: 8px 20px;
+  gap: 16px;
+}
+
+.wiki-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.wiki-logo-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #fff, #e8e8e8);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.wiki-logo-text {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--text);
+  font-family: 'Linux Libertine', Georgia, serif;
+  letter-spacing: -0.5px;
+}
+
+.wiki-logo-sub {
+  font-size: 11px;
+  color: var(--text-soft);
+  font-family: sans-serif;
+  letter-spacing: 0.5px;
+}
+
+.wiki-search {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.wiki-search input {
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-right: none;
+  border-radius: 2px 0 0 2px;
+  font-size: 13px;
+  width: 200px;
+  font-family: sans-serif;
+}
+
+.wiki-search button {
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  background: var(--infobox-bg);
+  border-radius: 0 2px 2px 0;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: sans-serif;
+}
+
+/* ── TAB BAR ── */
+.wiki-tabs {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+}
+
+.wiki-tabs-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 0;
+}
+
+.tab {
+  padding: 8px 14px;
+  font-size: 13px;
+  font-family: sans-serif;
+  color: var(--link);
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-bottom: none;
+  position: relative;
+  top: 1px;
+  text-decoration: none;
+}
+
+.tab.active {
+  background: var(--white);
+  border-color: var(--border);
+  border-bottom-color: var(--white);
+  color: var(--text);
+  cursor: default;
+}
+
+/* ── MAIN LAYOUT ── */
+.wiki-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 0;
+  padding: 20px 20px 60px;
+}
+
+/* ── SIDEBAR TOC ── */
+.wiki-toc {
+  width: 200px;
+  flex-shrink: 0;
+  margin-right: 24px;
+}
+
+.toc-box {
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  padding: 12px 14px;
+  font-size: 13px;
+  font-family: sans-serif;
+  position: sticky;
+  top: 16px;
+}
+
+.toc-title {
+  font-weight: bold;
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.toc-list {
+  list-style: none;
+  counter-reset: toc;
+}
+
+.toc-list li {
+  counter-increment: toc;
+  margin-bottom: 4px;
+}
+
+.toc-list li::before {
+  content: counter(toc) ". ";
+  color: var(--text-soft);
+}
+
+.toc-list a {
+  color: var(--link);
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.toc-list a:hover { text-decoration: underline; }
+
+.toc-sub {
+  list-style: none;
+  padding-left: 16px;
+  counter-reset: toc-sub;
+  margin-top: 3px;
+}
+
+.toc-sub li {
+  counter-increment: toc-sub;
+  margin-bottom: 2px;
+  font-size: 11px;
+}
+
+.toc-sub li::before {
+  content: counter(toc) "." counter(toc-sub) " ";
+  color: var(--text-soft);
+}
+
+/* ── ARTICLE ── */
+.wiki-article {
+  flex: 1;
+  min-width: 0;
+  background: var(--white);
+  padding: 20px 24px;
+  border: 1px solid var(--border-light);
+}
+
+/* ── ARTICLE TITLE ── */
+.article-title {
+  font-family: 'Linux Libertine', Georgia, serif;
+  font-size: 28px;
+  font-weight: normal;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 4px;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+
+.article-title .disambig {
+  font-size: 14px;
+  color: var(--text-soft);
+  font-style: italic;
+}
+
+/* ── NOTICE BOXES ── */
+.notice-box {
+  border: 1px solid var(--warning-border);
+  background: var(--warning-bg);
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-family: sans-serif;
+  font-size: 13px;
+}
+
+.notice-icon { font-size: 20px; flex-shrink: 0; }
+.notice-text { color: var(--text); line-height: 1.5; }
+.notice-text strong { font-weight: bold; }
+
+/* ── INFOBOX ── */
+.infobox {
+  float: right;
+  clear: right;
+  margin: 0 0 20px 24px;
+  border: 1px solid var(--border);
+  background: var(--infobox-bg);
+  width: 280px;
+  font-size: 13px;
+  font-family: sans-serif;
+}
+
+.infobox-title {
+  background: var(--infobox-header);
+  text-align: center;
+  padding: 6px 10px;
+  font-weight: bold;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.infobox-photo {
+  width: 100%;
+  background: #e8e8e8;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--border-light);
+  overflow: hidden;
+}
+
+.infobox-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.infobox-photo-placeholder {
+  font-size: 60px;
+  opacity: 0.4;
+}
+
+.infobox-caption {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-soft);
+  padding: 4px 8px;
+  font-style: italic;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.infobox table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.infobox td {
+  padding: 5px 8px;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border-light);
+  line-height: 1.4;
+}
+
+.infobox td:first-child {
+  font-weight: bold;
+  color: var(--text-soft);
+  width: 40%;
+  white-space: nowrap;
+}
+
+.infobox td:last-child {
+  color: var(--text);
+}
+
+/* ── SECTIONS ── */
+.section {
+  margin-bottom: 20px;
+  clear: left;
+}
+
+.section-title {
+  font-family: 'Linux Libertine', Georgia, serif;
+  font-size: 20px;
+  font-weight: normal;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 4px;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.subsection-title {
+  font-family: 'Linux Libertine', Georgia, serif;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 14px 0 8px;
+  color: var(--text);
+}
+
+p {
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+/* ── WIKI LINKS ── */
+a.wikilink {
+  color: var(--link);
+  text-decoration: none;
+}
+a.wikilink:hover { text-decoration: underline; }
+
+/* ── CITATIONS ── */
+sup {
+  font-size: 10px;
+  line-height: 0;
+}
+sup a {
+  color: var(--link);
+  text-decoration: none;
+}
+sup a:hover { text-decoration: underline; }
+
+/* ── REFERENCES ── */
+.references {
+  font-size: 12px;
+  font-family: sans-serif;
+  color: var(--text-soft);
+  columns: 2;
+  column-gap: 24px;
+}
+
+.references ol {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.references li {
+  margin-bottom: 4px;
+  break-inside: avoid;
+}
+
+/* ── STUB NOTICE ── */
+.stub-notice {
+  background: var(--stub-bg);
+  border: 1px solid var(--border);
+  padding: 10px 14px;
+  margin-top: 24px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-family: sans-serif;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--text-soft);
+  clear: both;
+}
+
+/* ── CATEGORIES ── */
+.categories {
+  border-top: 1px solid var(--border-light);
+  margin-top: 24px;
+  padding-top: 10px;
+  font-size: 13px;
+  font-family: sans-serif;
+  clear: both;
+}
+
+.categories-label {
+  font-weight: bold;
+  color: var(--text-soft);
+  margin-right: 8px;
+}
+
+.categories a {
+  color: var(--link);
+  text-decoration: none;
+  margin-right: 8px;
+}
+.categories a:hover { text-decoration: underline; }
+
+/* ── BACK BUTTON ── */
+.back-btn {
+  position: fixed;
+  bottom: 20px; right: 20px;
+  background: linear-gradient(135deg, #e8899a, #f0b080);
+  padding: 11px 22px;
+  border-radius: 30px;
+  text-decoration: none;
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+  font-family: sans-serif;
+  letter-spacing: 0.5px;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(232,137,154,0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.back-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(232,137,154,0.5);
+}
+
+/* ── MOBILE ── */
+@media (max-width: 700px) {
+  .wiki-toc { display: none; }
+  .infobox { float: none; width: 100%; margin: 0 0 16px 0; }
+  .wiki-search { display: none; }
+  .references { columns: 1; }
+  .wiki-main { padding: 12px 12px 80px; }
+  .wiki-article { padding: 14px 14px; }
+  .article-title { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="wiki-header">
+  <div class="wiki-header-inner">
+    <div class="wiki-logo">
+      <div class="wiki-logo-icon">🌸</div>
+      <div>
+        <div class="wiki-logo-text">Vaisiyaapedia</div>
+        <div class="wiki-logo-sub">The Free Encyclopedia (of her)</div>
+      </div>
+    </div>
+    <div class="wiki-search">
+      <input type="text" placeholder="Search Vaisiyaapedia">
+      <button>🔍</button>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="wiki-tabs">
+  <div class="wiki-tabs-inner">
+    <span class="tab active">Article</span>
+    <span class="tab">Talk</span>
+    <span class="tab">Read</span>
+    <span class="tab">Edit</span>
+    <span class="tab">View history</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="wiki-main">
+
+  <!-- TOC SIDEBAR -->
+  <div class="wiki-toc">
+    <div class="toc-box">
+      <div class="toc-title">Contents</div>
+      <ol class="toc-list">
+        <li><a href="#early-life">Early life</a></li>
+        <li><a href="#personality">Personality & traits</a>
+          <ul class="toc-sub">
+            <li><a href="#known-for">Known for</a></li>
+            <li><a href="#habits">Documented habits</a></li>
+          </ul>
+        </li>
+        <li><a href="#career">Career & achievements</a></li>
+        <li><a href="#personal-life">Personal life</a></li>
+        <li><a href="#controversies">Notable controversies</a></li>
+        <li><a href="#legacy">Legacy</a></li>
+        <li><a href="#references">References</a></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ARTICLE -->
+  <div class="wiki-article">
+
+    <!-- NOTICE -->
+    <div class="notice-box">
+      <div class="notice-icon">📌</div>
+      <div class="notice-text">
+        <strong>This article is written from a highly biased perspective.</strong>
+        The primary source (VK) has a known conflict of interest and considers the subject "the best person alive." Neutrality is not guaranteed and frankly not the point.
+      </div>
+    </div>
+
+    <h1 class="article-title">Vaisiyaa <span class="disambig">(the one and only)</span></h1>
+
+    <!-- INFOBOX -->
+    <div class="infobox">
+      <div class="infobox-title">Vaisiyaa</div>
+      <div class="infobox-photo">
+        <!-- REPLACE with: <img src="images/YOUR_PHOTO.jpg" alt="Vaisiyaa"> -->
+        <div class="infobox-photo-placeholder">🌸</div>
+      </div>
+      <div class="infobox-caption">
+        <!-- e.g. "Vaisiyaa, pictured looking effortlessly iconic, circa 2023" -->
+        [ADD PHOTO CAPTION HERE]
+      </div>
+      <table>
+        <tr>
+          <td>Born</td>
+          <td><!-- e.g. "June 8, 2000" --> [BIRTHDAY]<br><span style="color:#54595d">[BIRTHPLACE]</span></td>
+        </tr>
+        <tr>
+          <td>Nationality</td>
+          <td><!-- e.g. "Indian" --> [NATIONALITY]</td>
+        </tr>
+        <tr>
+          <td>Occupation</td>
+          <td><!-- e.g. "Student, Professional Chaos Agent, Snack Enthusiast" --> [OCCUPATION]</td>
+        </tr>
+        <tr>
+          <td>Known for</td>
+          <td><!-- e.g. "Being the funniest person in the room, emotional support, chaotic energy" --> [KNOWN FOR]</td>
+        </tr>
+        <tr>
+          <td>Notable works</td>
+          <td><!-- e.g. "The 2am voice note trilogy, The Great [PLACE] Incident" --> [NOTABLE WORKS / MOMENTS]</td>
+        </tr>
+        <tr>
+          <td>Affiliations</td>
+          <td><!-- e.g. "VK (ride or die, est. 20XX)" --> [YOUR NAME] (ride or die, est. [YEAR YOU MET])</td>
+        </tr>
+        <tr>
+          <td>Awards</td>
+          <td><!-- e.g. "Best Friend of the Year (self-declared), Most Likely to Eat Your Food" --> [AWARDS]</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- INTRO PARAGRAPH -->
+    <p>
+      <b>Vaisiyaa</b> (born <!-- [BIRTHDAY] -->) is a <a class="wikilink" href="#">[NATIONALITY]</a>
+      <!-- e.g. "student, chaos theorist, and widely regarded emotional support system" -->
+      [BRIEF DESCRIPTION OF WHO SHE IS],
+      best known for <!-- e.g. "her ability to make any situation simultaneously more dramatic and more fun" -->
+      [WHAT SHE'S BEST KNOWN FOR].<sup><a href="#ref1">[1]</a></sup>
+      She is widely considered <!-- e.g. "one of the greatest people to exist in [YOUR NAME]'s life, a fact that has been extensively documented and remains uncontested." -->
+      [OVER THE TOP CLAIM ABOUT HER].<sup><a href="#ref2">[2]</a></sup>
+    </p>
+    <p>
+      <!-- A second intro paragraph giving more context. E.g.:
+      "Originally from Chennai, Vaisiyaa has built a distinguished reputation for being the first person VK calls in any crisis, the last person to leave any gathering, and the only known individual capable of finishing an entire bag of [SNACK] in one sitting without any visible remorse."
+      -->
+      [SECOND INTRO PARAGRAPH — more colour on who she is, where she's from, what she does]
+    </p>
+
+    <!-- SECTION 1: EARLY LIFE -->
+    <div class="section" id="early-life">
+      <h2 class="section-title">Early life</h2>
+      <p>
+        <!-- e.g. "Vaisiyaa was born on a day the world was clearly not ready for. Raised in [CITY], she demonstrated from an early age an extraordinary capacity for [TRAIT] and an equally extraordinary capacity for [FUNNY TRAIT]." -->
+        [EARLY LIFE — where she grew up, childhood traits, origin story. Make it dramatic.]
+        <sup><a href="#ref3">[3]</a></sup>
+      </p>
+      <p>
+        <!-- e.g. "Little is known about her formative years, though sources close to the subject confirm she was 'always like this.'" -->
+        [SECOND EARLY LIFE PARAGRAPH — can be funny and vague]<sup><a href="#ref4">[4]</a></sup>
+      </p>
+    </div>
+
+    <!-- SECTION 2: PERSONALITY -->
+    <div class="section" id="personality">
+      <h2 class="section-title">Personality and traits</h2>
+      <p>
+        <!-- e.g. "Scholars and close associates have long debated the precise nature of Vaisiyaa's personality, ultimately concluding that she defies conventional categorisation." -->
+        [OPENING LINE ABOUT HER PERSONALITY]
+      </p>
+
+      <h3 class="subsection-title" id="known-for">Known for</h3>
+      <p>
+        <!-- List her actual traits written in Wikipedia voice. e.g.:
+        "Vaisiyaa is perhaps best known for her [TRAIT], a quality that has been observed across multiple time zones and social settings. She is also noted for her [ANOTHER TRAIT] and her [ANOTHER TRAIT], the latter of which has been described by primary sources as 'genuinely unhinged but in the best way possible.'"[5]
+        -->
+        [HER TRAITS — at least 2-3, written seriously]<sup><a href="#ref5">[5]</a></sup>
+      </p>
+
+      <h3 class="subsection-title" id="habits">Documented habits</h3>
+      <p>
+        <!-- Funny recurring behaviours. e.g.:
+        "Field researchers have noted several recurring behavioural patterns, including but not limited to: sending voice notes of unreasonable length at unreasonable hours[6], arriving exactly [X] minutes late to everything while somehow making it feel intentional[7], and ordering the same thing at every restaurant before asking to try everyone else's food."[8]
+        -->
+        [HER FUNNY HABITS — the more specific the better]<sup><a href="#ref6">[6]</a></sup>
+      </p>
+    </div>
+
+    <!-- SECTION 3: CAREER -->
+    <div class="section" id="career">
+      <h2 class="section-title">Career and achievements</h2>
+      <p>
+        <!-- Treat her real life/job/studies as though it's groundbreaking. e.g.:
+        "Vaisiyaa currently pursues [FIELD/DEGREE] at [INSTITUTION], where she has distinguished herself through [SOMETHING SHE DOES]. Her contributions to the field of [SUBJECT] remain ongoing, though she has privately expressed that [FUNNY COMPLAINT SHE HAS ABOUT IT]."[9]
+        -->
+        [HER STUDIES / JOB written like a big deal]<sup><a href="#ref9">[9]</a></sup>
+      </p>
+      <p>
+        <!-- Her unofficial achievements. e.g.:
+        "Beyond her formal pursuits, Vaisiyaa has accumulated an impressive portfolio of informal achievements, including [FUNNY ACHIEVEMENT 1], [FUNNY ACHIEVEMENT 2], and successfully convincing VK to [SOMETHING SHE CONVINCED YOU TO DO] on at least [X] separate occasions."[10]
+        -->
+        [UNOFFICIAL / FUNNY ACHIEVEMENTS]<sup><a href="#ref10">[10]</a></sup>
+      </p>
+    </div>
+
+    <!-- SECTION 4: PERSONAL LIFE -->
+    <div class="section" id="personal-life">
+      <h2 class="section-title">Personal life</h2>
+      <p>
+        <!-- Your friendship. e.g.:
+        "Vaisiyaa's most significant personal relationship is her long-standing alliance with VK, which began in [YEAR/CONTEXT OF HOW YOU MET]. The nature of this relationship has been described variously as 'friendship', 'siblinghood', and 'a mutual agreement to be chaotic together indefinitely.'"[11]
+        -->
+        [HOW YOU MET + YOUR FRIENDSHIP, written formally]<sup><a href="#ref11">[11]</a></sup>
+      </p>
+      <p>
+        <!-- Inside jokes / memorable moments. e.g.:
+        "Notable shared incidents include [INSIDE JOKE / MEMORY 1], the still-disputed [INSIDE JOKE / MEMORY 2], and the [FUNNY INCIDENT] of [YEAR], which both parties have agreed never to speak of publicly."[12]
+        -->
+        [INSIDE JOKES AND MEMORIES written like documented historical events]<sup><a href="#ref12">[12]</a></sup>
+      </p>
+      <p>
+        <!-- Her interests. e.g.:
+        "In her leisure time, Vaisiyaa is known to enjoy [HOBBY/INTEREST 1], [HOBBY/INTEREST 2], and an almost devotional relationship with [FOOD/SHOW/THING SHE LOVES]."[13]
+        -->
+        [HER INTERESTS / OBSESSIONS]<sup><a href="#ref13">[13]</a></sup>
+      </p>
+    </div>
+
+    <!-- SECTION 5: CONTROVERSIES -->
+    <div class="section" id="controversies">
+      <h2 class="section-title">Notable controversies</h2>
+      <p>
+        <!-- Funny "controversies" — things she does that annoy you lovingly. e.g.:
+        "Vaisiyaa has been at the centre of several low-stakes but deeply felt controversies, most notably the ongoing dispute regarding her policy of [THING SHE DOES THAT ANNOYS YOU] and the unresolved matter of [ANOTHER THING]. The subject has declined to comment, citing 'I do what I want' as her official position."[14]
+        -->
+        [FUNNY CONTROVERSIES — things she does, harmless arguments you've had, etc.]<sup><a href="#ref14">[14]</a></sup>
+      </p>
+    </div>
+
+    <!-- SECTION 6: LEGACY -->
+    <div class="section" id="legacy">
+      <h2 class="section-title">Legacy</h2>
+      <p>
+        <!-- Start sweet here — this is where the genuine stuff lands hardest. e.g.:
+        "Whatever formal legacy Vaisiyaa ultimately builds, those closest to her are unanimous: she makes every room better simply by being in it."[15]
+        -->
+        [GENUINE SWEET THING ABOUT HER — the turn from funny to heartfelt]<sup><a href="#ref15">[15]</a></sup>
+      </p>
+      <p>
+        <!-- The real thing you want to say. e.g.:
+        "VK, the primary source for this article and self-described 'world's luckiest person to know her', has stated on record: 'She's the kind of person who makes you feel like everything is going to be okay. I don't know what I'd do without her, and I genuinely never want to find out.'"[16]
+        -->
+        [THE REAL THING YOU WANT TO SAY ABOUT HER]<sup><a href="#ref16">[16]</a></sup>
+      </p>
+    </div>
+
+    <!-- STUB NOTICE -->
+    <div class="stub-notice">
+      <span style="font-size:20px">📝</span>
+      <span>This article does not do Vaisiyaa justice. No article could. You had to be there.</span>
+    </div>
+
+    <!-- REFERENCES -->
+    <div class="section" id="references">
+      <h2 class="section-title">References</h2>
+      <div class="references">
+        <ol>
+          <li id="ref1"><!-- e.g. "VK, personal testimony, every single day." --> [SOURCE 1]</li>
+          <li id="ref2"><!-- e.g. "General consensus, est. [YEAR YOU MET]." --> [SOURCE 2]</li>
+          <li id="ref3"><!-- e.g. "Childhood neighbours, quoted anonymously." --> [SOURCE 3]</li>
+          <li id="ref4"><!-- e.g. "'She was always like this.' — someone who knew her young." --> [SOURCE 4]</li>
+          <li id="ref5"><!-- e.g. "Field observations, [YEAR]–present." --> [SOURCE 5]</li>
+          <li id="ref6"><!-- e.g. "WhatsApp chat logs, [DATE RANGE]. Archived. Unread." --> [SOURCE 6]</li>
+          <li id="ref7"><!-- e.g. "Multiple eyewitnesses." --> [SOURCE 7]</li>
+          <li id="ref8"><!-- e.g. "Restaurant receipts, [CITY], [YEAR]." --> [SOURCE 8]</li>
+          <li id="ref9"><!-- e.g. "[INSTITUTION] official records, probably." --> [SOURCE 9]</li>
+          <li id="ref10"><!-- e.g. "VK, personal correspondence, ongoing." --> [SOURCE 10]</li>
+          <li id="ref11"><!-- e.g. "Both parties, independently corroborated." --> [SOURCE 11]</li>
+          <li id="ref12"><!-- e.g. "Overheard in [LOCATION], [YEAR]. Date approximate." --> [SOURCE 12]</li>
+          <li id="ref13"><!-- e.g. "[STREAMING PLATFORM] watch history, [YEAR]." --> [SOURCE 13]</li>
+          <li id="ref14"><!-- e.g. "Disputed. Ongoing." --> [SOURCE 14]</li>
+          <li id="ref15"><!-- e.g. "Everyone who has ever met her." --> [SOURCE 15]</li>
+          <li id="ref16"><!-- e.g. "VK, birthday message, [YEAR]." --> [SOURCE 16]</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="categories">
+      <span class="categories-label">Categories:</span>
+      <!-- Add/edit categories as you like -->
+      <a href="#">People who are too good for this world</a> ·
+      <a href="#">Best friends</a> ·
+      <a href="#">[HER CITY] locals</a> ·
+      <a href="#">[HER FIELD/INTEREST]</a> ·
+      <a href="#">Certified chaotic goods</a> ·
+      <a href="#">People VK would be lost without</a>
+    </div>
+
+  </div><!-- end article -->
+</div><!-- end main -->
+
+<a href="index.html" class="back-btn">BACK ◀</a>
+
+</body>
+</html>
