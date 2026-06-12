@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Counting Down — For Vaisiyaa 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Caveat:wght@400;600&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0c0a08;
+  --gold: #c9a96e;
+  --gold-light: #e8cc8a;
+  --gold-faint: rgba(201,169,110,0.12);
+  --rose: #c06878;
+  --rose-soft: #e8899a;
+  --cream: #fdfaf4;
+  --ink-soft: rgba(255,255,255,0.5);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  height: 100vh;
+  max-height: 100vh;
+  background: var(--bg);
+  font-family: 'DM Sans', sans-serif;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse at 15% 20%, rgba(192,104,120,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 80%, rgba(201,169,110,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(201,169,110,0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── PARTICLES ── */
+.particle {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  animation: drift linear infinite;
+  opacity: 0;
+}
+@keyframes drift {
+  0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10%  { opacity: 0.4; }
+  90%  { opacity: 0.08; }
+  100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+}
+
+/* ── WRAPPER ── */
+.wrapper {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* ── EYEBROW ── */
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(201,169,110,0.5);
+  margin-bottom: 12px;
+  opacity: 0;
+  animation: fadeUp 0.8s cubic-bezier(.22,1,.36,1) 0.2s forwards;
+}
+
+/* ── HEADING ── */
+.heading {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(28px, 8vw, 52px);
+  color: var(--cream);
+  line-height: 1.2;
+  margin-bottom: 8px;
+  opacity: 0;
+  animation: fadeUp 0.8s cubic-bezier(.22,1,.36,1) 0.35s forwards;
+}
+
+.heading span {
+  color: var(--gold-light);
+}
+
+.subheading {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(16px, 4vw, 22px);
+  color: var(--rose-soft);
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: fadeUp 0.8s cubic-bezier(.22,1,.36,1) 0.5s forwards;
+}
+
+/* ── COUNTDOWN GRID ── */
+.countdown {
+  display: flex;
+  gap: clamp(6px, 2.5vw, 16px);
+  align-items: flex-start;
+  margin-bottom: 24px;
+  opacity: 0;
+  width: 100%;
+  max-width: 360px;
+  justify-content: center;
+  animation: fadeUp 0.9s cubic-bezier(.22,1,.36,1) 0.65s forwards;
+}
+
+.unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.unit-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.1;
+  background: rgba(201,169,110,0.06);
+  border: 1px solid rgba(201,169,110,0.18);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.unit-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(201,169,110,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.unit-number {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 6.5vw, 52px);
+  font-weight: 600;
+  color: var(--gold-light);
+  line-height: 1;
+  transition: transform 0.3s cubic-bezier(.22,1,.36,1);
+  position: relative;
+  z-index: 1;
+}
+
+.unit-number.flip {
+  animation: flipNum 0.4s cubic-bezier(.22,1,.36,1);
+}
+
+@keyframes flipNum {
+  0%   { transform: translateY(-8px); opacity: 0.3; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.unit-label {
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(201,169,110,0.45);
+}
+
+/* ── SEPARATOR ── */
+.sep {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 7vw, 48px);
+  color: rgba(201,169,110,0.25);
+  line-height: 1;
+  margin-top: clamp(14px, 3.5vw, 24px);
+  align-self: flex-start;
+}
+
+/* ── DATE PILL ── */
+.date-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(201,169,110,0.2);
+  border-radius: 100px;
+  padding: 10px 22px;
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: fadeUp 0.8s cubic-bezier(.22,1,.36,1) 0.8s forwards;
+}
+
+.date-pill-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--rose-soft);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.7); }
+}
+
+.date-pill-text {
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(201,169,110,0.6);
+}
+
+/* ── MESSAGE ── */
+.message {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(15px, 4vw, 20px);
+  color: var(--ink-soft);
+  max-width: 360px;
+  line-height: 1.7;
+  opacity: 0;
+  animation: fadeUp 0.8s cubic-bezier(.22,1,.36,1) 0.95s forwards;
+}
+
+
+
+/* ── BIRTHDAY STATE ── */
+.birthday-msg {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.birthday-msg.active { display: flex; }
+
+.birthday-title {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(36px, 10vw, 64px);
+  color: var(--gold-light);
+  animation: fadeUp 1s ease forwards;
+}
+
+.birthday-sub {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(18px, 5vw, 26px);
+  color: var(--rose-soft);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── DIVIDER ── */
+.divider {
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 0 auto 20px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.75s forwards;
+}
+</style>
+</head>
+<body>
+
+<div class="wrapper" id="main">
+
+  <p class="eyebrow">For the one who deserves it</p>
+
+  <h1 class="heading">
+    Vaisiyaa's <span>Birthday</span>
+  </h1>
+
+  <p class="subheading">is almost here ✨</p>
+
+  <div class="countdown" id="countdown">
+    <div class="unit">
+      <div class="unit-box"><span class="unit-number" id="days">--</span></div>
+      <span class="unit-label">Days</span>
+    </div>
+    <div class="sep">:</div>
+    <div class="unit">
+      <div class="unit-box"><span class="unit-number" id="hours">--</span></div>
+      <span class="unit-label">Hours</span>
+    </div>
+    <div class="sep">:</div>
+    <div class="unit">
+      <div class="unit-box"><span class="unit-number" id="minutes">--</span></div>
+      <span class="unit-label">Minutes</span>
+    </div>
+    <div class="sep">:</div>
+    <div class="unit">
+      <div class="unit-box"><span class="unit-number" id="seconds">--</span></div>
+      <span class="unit-label">Seconds</span>
+    </div>
+  </div>
+
+  <div class="date-pill">
+    <div class="date-pill-dot"></div>
+    <span class="date-pill-text">22nd October 2026</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <p class="message">
+    Something special is being prepared.<br>
+    Come back on the day — it'll be worth it. 🌸
+  </p>
+
+
+
+</div>
+
+<script>
+  // Target: 22 October 2026 00:00:00
+  const target = new Date('2026-10-22T00:00:00');
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function setNum(id, val) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const newVal = pad(val);
+    if (el.textContent !== newVal) {
+      el.textContent = newVal;
+      el.classList.remove('flip');
+      void el.offsetWidth;
+      el.classList.add('flip');
+    }
+  }
+
+  function tick() {
+    const now = new Date();
+    const diff = target - now;
+
+    if (diff <= 0) {
+      // Birthday!
+      document.getElementById('countdown').style.display = 'none';
+      document.querySelector('.subheading').textContent = '🎂';
+      document.querySelector('.heading').innerHTML = 'Happy Birthday, <span>Vaisiyaa!</span>';
+      document.querySelector('.eyebrow').textContent = 'Today is the day';
+      document.querySelector('.date-pill').style.display = 'none';
+      document.querySelector('.message').textContent = 'Your surprise is ready. Go on, open it. 🌸';
+      return;
+    }
+
+    const totalSecs = Math.floor(diff / 1000);
+    const days    = Math.floor(totalSecs / 86400);
+    const hours   = Math.floor((totalSecs % 86400) / 3600);
+    const minutes = Math.floor((totalSecs % 3600) / 60);
+    const seconds = totalSecs % 60;
+
+    setNum('days', days);
+    setNum('hours', hours);
+    setNum('minutes', minutes);
+
+    // Seconds — update without flip animation
+    document.getElementById('seconds').textContent = pad(seconds);
+  }
+
+  tick();
+  setInterval(tick, 1000);
+
+  // ── PARTICLES ──
+  const colors = ['#c9a96e', '#e8cc8a', '#c06878', '#e8899a', '#fdfaf4'];
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 3 + 1.5;
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${8 + Math.random()*14}s;
+      animation-delay:${Math.random()*10}s;
+    `;
+    document.body.appendChild(p);
+  }
+</script>
+</body>
+</html>
