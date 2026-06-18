@@ -327,24 +327,6 @@ function cfLoop(){
   requestAnimationFrame(cfLoop);
 }
 
-/* ─── FLOATING HEARTS ─── */
-const heartEmojis = ['💛','🌸','💕','✨','🎀','💖','🌟'];
-function spawnHeart(){
-  const h = document.createElement('div');
-  h.className = 'heart';
-  h.textContent = heartEmojis[Math.floor(Math.random()*heartEmojis.length)];
-  h.style.left = (10+Math.random()*80)+'vw';
-  h.style.bottom = '-40px';
-  const dur = 5+Math.random()*4;
-  h.style.animationDuration = dur+'s';
-  h.style.animationDelay = '0s';
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(), dur*1000);
-}
-function startHearts(){
-  spawnHeart();
-  setInterval(spawnHeart, 900);
-}
 </script>
 </body>
 </html>
